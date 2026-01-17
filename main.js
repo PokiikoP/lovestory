@@ -57,7 +57,7 @@ function getTimeString() {
 /* ================== STORY ================== */
 const story = [
   { text: "My cute wifey, tap tap through this quickly (or slowly xD) and come back home soon, hubby is missing you!", scene: "intro" },
-  { text: "I made this, hubby pro, right? hihihihi", scene: "intro" },
+  { text: "I made this, hubby pro, right? hihihihi \n by the way, watch the two bubbles in background, don't miss that", scene: "intro" },
   { text: "It's a quiet place\njust for the two of us.\n No one's watching us, don't worry, my innocent wifey, if ykyk, lol", scene: "intro" },
 
   { text: "At first,\nwe were just two strangers.", scene: "love" },
@@ -73,7 +73,7 @@ const story = [
 
   { text: "Time kept moving…", scene: "time" },
 {
-  text: "And it's been:\n<span id='live-timer'></span>\nsince we first met.",
+  text: "And it's been ( wait a second, this thing is slow, stupid) :\n<span id='live-timer'></span>\nsince we first met.",
   scene: "time"
 },
   { text: "Every second,\nquietly adding up.", scene: "time" },
