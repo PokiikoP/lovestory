@@ -12,7 +12,33 @@ window.addEventListener("resize", resize);
 
 /* ================== TIME ================== */
 // CHANGE THIS
-const startDate = new Date(2025, 11, 16, 21, 30, 0);
+
+let currentScene = "";
+let timeInterval = null;
+
+function startLiveTimer() {
+  if (timeInterval) clearInterval(timeInterval);
+
+  timeInterval = setInterval(() => {
+    if (currentScene !== "time") return;
+
+    const timerEl = document.getElementById("live-timer");
+    if (timerEl) {
+      timerEl.textContent = getTimeString();
+    }
+  }, 1000);
+}
+
+
+function stopLiveTimer() {
+  if (timeInterval) {
+    clearInterval(timeInterval);
+    timeInterval = null;
+  }
+}
+
+
+const startDate = new Date(2025, 11, 15, 61, 55, 0);
 
 function getTimeString() {
   const now = new Date();
@@ -25,58 +51,81 @@ function getTimeString() {
   const m = Math.floor(diff / 60000);
   const s = Math.floor((diff % 60000) / 1000);
 
-  return `${d} days\n${h} hours\n${m} minutes\n${s} seconds`;
+  return `${d} days\n${h} hours\n${m} minutes\n and ${s} seconds`;
 }
 
 /* ================== STORY ================== */
 const story = [
-  { text: "My cute wifey, tap tap through this quickly and come back home soon, hubby is missing you!", scene: "intro" },
-  { text: "I made this, me pro, right? hihihihi", scene: "intro" },
-  { text: "It's a quiet place\njust for the two of us.", scene: "intro" },
+  { text: "My cute wifey, tap tap through this quickly (or slowly xD) and come back home soon, hubby is missing you!", scene: "intro" },
+  { text: "I made this, hubby pro, right? hihihihi", scene: "intro" },
+  { text: "It's a quiet place\njust for the two of us.\n No one's watching us, don't worry, my innocent wifey, if ykyk, lol", scene: "intro" },
 
   { text: "At first,\nwe were just two strangers.", scene: "love" },
   { text: "Yapping.\nSmiling.\nLaughing.\nGetting curious about each other.\nRemember the scorpio thingie?", scene: "love" },
-  { text: "Somewhere between\nthose moments…", scene: "love" },
-  { text: "Something happened.", scene: "love" },
+  { text: "Somewhere between\nthose moments…\n", scene: "love" },
+  { text: "Something happened. Something blossomed. \n \n\n ahm, ahm, hihiihi, blossom means developing in healthy way", scene: "love" },
   { text: "Something called love.", scene: "love" },
 
-  { text: "Even when life\nput space between us 🌍", scene: "distance" },
-  { text: "Even when days\nfelt long.", scene: "distance" },
-  { text: "We didn't give up on each other.", scene: "distance" },
-  { text: "We chose to be there for each other.", scene: "distance" },
+  { text: "Even when life\nput space between us,\n nearly 6900km, wifeyyy, so far away, no?", scene: "distance" },
+  { text: "Even when days\nfelt long without you,\n the sadness disappeared as soon as you appeared,\n bites wifey's arms, nomnom, so sweet,\n bites the other one as well, nomnom", scene: "distance" },
+  { text: "We didn't give up on each other, and realized that we cannot live without each other", scene: "distance" },
   { text: "We chose to trust each other.", scene: "distance" },
 
   { text: "Time kept moving…", scene: "time" },
-  { text: () => `And it's been:\n\n${getTimeString()}`, scene: "time" },
+{
+  text: "And it's been:\n<span id='live-timer'></span>\nsince we first met.",
+  scene: "time"
+},
   { text: "Every second,\nquietly adding up.", scene: "time" },
 
   { text: "And somehow…", scene: "future" },
-  { text: "I feel closer to you\nthan ever.", scene: "future" },
+  { text: "I feel closer to you\nthan ever.\n pulls wifey into the bed for cuddling", scene: "future" },
   { text: "If this is one month…", scene: "future" },
   { text: "I can't wait to see\nwhat comes next 🌱", scene: "future" },
 
-  { text: "Happy First Monthiversary, My Wifey 💖", scene: "merge" }
+  { text: "Happy First Monthiversary, My Wifey 💖", scene: "merge" },
+  { text: "Why did you tap again??\n You were supposed to stop earlier, smh", scene: "merge" },
+  { text: "Seriously? Again? Come back to home, hmph,\n me waiting for you, me sad, hurry up!!", scene: "merge" },
+  { text: "This is the final page, stop it now,\n come back or me punish you in the bed, hihihihi", scene: "merge" },
+  { text: "So, you really want to get punished huh", scene: "merge" },
+  { text: "Forget it, it's our first monthiversary today,\n I'll just forgive you and just bites your lips hard and let you go, come back now.", scene: "merge" },
+  { text: "Hubby loves you a lot.", scene: "merge" },
 ];
 
 let storyIndex = 0;
 
 /* ================== TEXT REVEAL ================== */
+
 function revealText(content) {
   textEl.innerHTML = "";
-  const text = typeof content === "function" ? content() : content;
+  const raw = typeof content === "function" ? content() : content;
 
-  [...text].forEach((char, i) => {
-    const span = document.createElement("span");
-    span.textContent = char;
-    span.style.opacity = 0;
-    textEl.appendChild(span);
+  const temp = document.createElement("div");
+  temp.innerHTML = raw;
 
-    requestAnimationFrame(() => {
-      span.style.transition = "opacity 0.4s ease";
-      span.style.opacity = 1;
-    });
-  });
+  function walk(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      [...node.textContent].forEach(char => {
+        const span = document.createElement("span");
+        span.textContent = char;
+        span.style.opacity = 0;
+        textEl.appendChild(span);
+
+        requestAnimationFrame(() => {
+          span.style.transition = "opacity 0.4s ease";
+          span.style.opacity = 1;
+        });
+      });
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const el = document.createElement(node.tagName.toLowerCase());
+      if (node.id) el.id = node.id;
+      textEl.appendChild(el);
+    }
+  }
+
+  [...temp.childNodes].forEach(walk);
 }
+
 
 /* ================== PARTICLES ================== */
 const particles = [];
@@ -100,20 +149,30 @@ const coreB = { x: canvas.width * 0.7, y: canvas.height / 2 };
 let coreTargetDistance = 0.5;
 let merging = false;
 let mergeProgress = 0;
-mergeProgress += 0.004;
 
-const overlapPhase = Math.max(0, mergeProgress - 0.35) / 0.35;
 
 
 /* ================== SCENE CONTROL ================== */
+
 function setScene(mode) {
+  currentScene = mode;
+
+  // stop timer unless we're in time scene
+  if (mode !== "time") {
+    stopLiveTimer();
+  }
+
   if (mode === "intro") coreTargetDistance = 0.5;
   if (mode === "love") coreTargetDistance = 0.25;
   if (mode === "distance") coreTargetDistance = 0.75;
-  if (mode === "time") coreTargetDistance = 0.45;
+  if (mode === "time") {
+    coreTargetDistance = 0.45;
+    startLiveTimer(); // 🔥 THIS IS THE KEY
+  }
   if (mode === "future") coreTargetDistance = 0.2;
   if (mode === "merge") merging = true;
 }
+
 
 /* ================== DRAW LOOP ================== */
 function draw() {
